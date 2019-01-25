@@ -3,20 +3,21 @@
 ![](assets/images/demo.jpg)
 
 You are required to implement a simple Tank War game using OOP concepts in Java programming
-language. Below are the specifications:
+language. Sounds exciting, right?
 
 ### Development Environment
 It's recommended to use IDEA community edition as IDE. Using JDK8 to compile your code. You may
-fork this repository to your own and start your own solution.
+fork this repository to your own and start your own solution. Since `Tools.java` uses javafx media
+to play audio file, if you are using JDK11 you need to add those jar files manually.
 
 ### Player Tank & Keyboard Control
 * There should be one and only one tank controlled by player using keyboard. You can use Up, Down,
 Left, Right to move the tank in eight directions, which means, you should include LeftUp, UpRight,
 RightDown, DownLeft also. Image files of the tank in eight directions will be provided under directory
 `assets\images\tank${direction}.gif`
-* When you press CTRL, your tank would fire and images of missile in eight directions are also
-provided, `assets\images\missile${direction}.gif`, direction of the missile should
-be same as that of Tank. Sound effect can be simulated using audio files `assets\audios\shoot.wav`
+* When you press CTRL, your tank would fire a missile. Images of missile in eight directions are also
+provided as `assets\images\missile${direction}.gif`, direction of the missile should
+be same as that of Tank. Sound effect can be simulated using audio file `assets\audios\shoot.wav`
 * When you press A, you tank would trigger a SUPER-FIRE: fire to 8 directions at the same time!
 Sound effect can be simulated using either `assets\audios\supershoot.aiff` or `assets\audios\supershoot.wav` randomly
 * Player tank has a initial maximum HP of 100. Please draw a blood bar with tank in the upper
@@ -40,9 +41,9 @@ player tank, please simulate a explosion
 * Explosion sound effect audio file `assets\audios\explode.wav`
 
 ### Wall
-* Simulate 3 walls, one in upper-middle, two in left and right
-* Enemy tank cannot penetrate wall, as it should be, player tank can be allowed
-* If missile hit all, it simply disappears
+* Simulate 4 walls, one in upper-middle, two in left and right, one in bottom-middle
+* Tank cannot penetrate wall, as it should be
+* If missile hit wall, it simply disappears
 
 ### Blood
 * In the beginning of the game there will be a blood jumping in the center. If player tank
