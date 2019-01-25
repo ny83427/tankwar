@@ -42,15 +42,23 @@ player tank, please simulate a explosion
 
 ### Wall
 * Simulate 4 walls, one in upper-middle, two in left and right, one in bottom-middle
+* Use `assets/images/brick.png` to build the walls
 * Tank cannot penetrate wall, as it should be
 * If missile hit wall, it simply disappears
 
 ### Blood
 * In the beginning of the game there will be a blood jumping in the center. If player tank
-eats the blood its HP will be restored to 100 immediately!
+eats the blood its HP will be restored to 100 immediately! Play audio file `assets/audios/revive.wav`
+when this happens
 * If blood was eaten it will disappear
 * If player tank HP was lower than 50%, blood will appear again so that player tank can be
 healed completely, however, blood will appear with a chance of 66.7%
+
+### Optional(It's up to you)
+* Place two tress in the upper-right and bottom-left using `assets/images/tree.png`
+* Fighting against enemies forever can be lonely and boring, a small camel pet might make you
+a little bit happier: `assets/images/pet-camel.gif`
+* You can search some cute audio files for your pet at here if you want: https://freesound.org/
 
 ### Game Rule
 * Tank will move with speed of 5, which means its x and y will either plus of minus 5
@@ -71,11 +79,11 @@ Enemies Killed: 452
 ```
 
 ### Implementation Tips
-* Design classes of `Tank`, `Missile`, `Wall`, `Blood`, `Explode`, and `Blood`
+* Design classes of `Tank`, `Missile`, `Wall`, `Blood`, and `Explosion`
 * You can simply using `#fillRect` to draw walls with gray color, just calculate their locations
 * To detect object collision, you can using `Rectange#intersects`, you can define a method `getRectangle`
 for game objects for simple collision detection
-* Write a enum `Direction` with 8 directions there
+* Write a enum `Direction` with 8 directions there(provided in skeleton code)
 * Write a game client `TankWar`, with 800 * 600 screen, title and icon(image file provided `assets\images\icon.png`)
 * Using a infinite loop to repaint the screen with interval of 50MS
 * Change location of tank, missile, explode and implement draw method within these classes
@@ -85,6 +93,7 @@ development stage and for easy roll back also
 Basic methods like generate random number, play audio file and etc are there already. The general
 idea to draw game objects are also included. However, you still need many work to achieve the goal
 we set, feel free to modify the code, as they are just a very rough start and even would have issues
+or bad smells. Take care!
 * Read javadoc or browse the source code when you get stuck, ask help when you get stuck more than
 one hour, as this mid-term project is somewhat challenging for beginners
 
