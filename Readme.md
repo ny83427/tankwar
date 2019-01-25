@@ -37,7 +37,7 @@ disappear from the screen
 * If a missile from player tank hit any enemy tank, or a missile from any enemy tank hit
 player tank, please simulate a explosion
 * There are 10 images file for you to simulate a simple animation effect under directory
-`assets\images`, from `0.gif` to `9.gif`
+`assets\images`, from `0.gif` to `10.gif`
 * Explosion sound effect audio file `assets\audios\explode.wav`
 
 ### Wall
@@ -61,6 +61,7 @@ a little bit happier: `assets/images/pet-camel.gif`
 * You can search some cute audio files for your pet at here if you want: https://freesound.org/
 
 ### Game Rule
+* Press SPACE to start game, before that all game objects should stay still
 * Tank will move with speed of 5, which means its x and y will either plus of minus 5
 * Missile will fly with speed of 10, which means its x and y will either plus of minus 10
 * When player tank and enemy tank move and meet, they cannot penetrate each other as it should be
@@ -68,6 +69,10 @@ a little bit happier: `assets/images/pet-camel.gif`
 `assets\audios\death.mp3` audio file as an indicator and print message in the screen like this:
 >     GAME OVER
 >     PRESS F2 TO RESTART
+
+You may refer to this screenshot as an example:
+![](assets/images/game-over.jpg)
+
 * After user press F2 game will restart with initial settings
 * Display these data in the left-upper side, for example:
 ```
