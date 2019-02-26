@@ -23,8 +23,9 @@ class Missile extends GameObject {
         this.isEnemy = isEnemy;
     }
 
+    @Override
     void draw(Graphics g) {
-        g.drawImage(dir.get(OBJECT_TYPE), x, y, null);
+        g.drawImage(dir.getImage(OBJECT_TYPE), x, y, null);
         x += dir.xFactor * SPEED;
         y += dir.yFactor * SPEED;
         if (x < 0 || x > TankWar.WIDTH || y < 0 || y > TankWar.HEIGHT) {

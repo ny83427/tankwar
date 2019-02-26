@@ -28,9 +28,8 @@ class Tools {
      */
     static void playAudio(final String audioFile) {
         File file = new File("assets/audios/" + audioFile);
-        Media hit = new Media(file.toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(hit);
-        mediaPlayer.play();
+        Media media = new Media(file.toURI().toString());
+        new MediaPlayer(media).play();
     }
 
     /**

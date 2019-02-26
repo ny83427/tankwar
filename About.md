@@ -45,8 +45,9 @@ and you are always welcome to improve it to the level you want
 * You are encouraged to improve enemy tank's AI so that they won't be too foolish
 
 * You are encouraged to make game easily customizable, such as screen width/height,
-moving speed of Tank and Missile and etc. You can also introduce more powerful
-weapons or bombs that can be equipped or used by player tank...To Infinite and Beyond!
+moving speed of Tank and Missile, keyboard control and etc. You can also introduce
+more powerful weapons or bombs that can be equipped or used by player tank...
+To Infinite and Beyond!
 
 * And finally, Happy Coding! [Java Never Sleep](https://www.javaneversleep.com)!
 ![](assets/images/happy-coding.jpg)

@@ -3,12 +3,11 @@ import java.awt.event.KeyEvent;
 
 class Tank extends GameObject {
     /**
-     * It would be better if width and height are retrieved from image of current direction.
-     * However, due to asset not prepared well accordingly, they are different and would
-     * result in player tank cannot move sometimes, this is a simply workaround to avoid
-     * complex handling when collision happens
+     * Simplification for collision detection, as images of tank in different directions
+     * are different in size, it would add some complexity in certain conditions, which
+     * can be handled but require more effort
      */
-    private static final int WIDTH = 44, HEIGHT = 44;
+    private static final int REC_WIDTH = 44, REC_HEIGHT = 44;
 
     private static final int SPEED = 5;
 
@@ -24,6 +23,19 @@ class Tank extends GameObject {
 
     private Direction direction;
 
+    private Direction previousDirection = Direction.Down;
+
+    /**
+     * actual width of tank in current direction, different from that of {@link #REC_WIDTH}
+     */
+    private int width = 35, height = 34;
+
+    private final boolean isEnemy;
+
+    private Image pet;
+
+    private int petWidth;
+
     Direction direction() {
         return this.direction;
     }
@@ -31,14 +43,6 @@ class Tank extends GameObject {
     void stop() {
         this.direction = null;
     }
-
-    private Direction previousDirection = Direction.Down;
-
-    private final boolean isEnemy;
-
-    private Image pet;
-
-    private int petWidth;
 
     Tank(int x, int y) {
         this(x, y, false);
@@ -88,8 +92,9 @@ class Tank extends GameObject {
 
     @Override
     void draw(Graphics g) {
-        Image img = previousDirection.get(OBJECT_TYPE);
-        int width = img.getWidth(null);
+        Image img = previousDirection.getImage(OBJECT_TYPE);
+        this.width = img.getWidth(null);
+        this.height = img.getHeight(null);
         // display blood bar for the tank player can control
         if (!isEnemy) {
             g.setColor(Color.RED);
@@ -119,14 +124,14 @@ class Tank extends GameObject {
     private void checkBound() {
         int minX = isEnemy ? 0 : (petWidth + 5);
         if (x < minX) x = minX;
-        if (x > TankWar.WIDTH - WIDTH - BORDER_DELTA_X) {
-            x = TankWar.WIDTH - WIDTH - BORDER_DELTA_X;
+        if (x > TankWar.WIDTH - width - BORDER_DELTA_X) {
+            x = TankWar.WIDTH - width - BORDER_DELTA_X;
         }
 
         int minY = isEnemy ? 0 : BLOOD_BAR_HEIGHT;
         if (y < minY) y = minY;
-        if (y > TankWar.HEIGHT - HEIGHT - minY - BORDER_DELTA_Y) {
-            y = TankWar.HEIGHT - HEIGHT - minY - BORDER_DELTA_Y;
+        if (y > TankWar.HEIGHT - height - minY - BORDER_DELTA_Y) {
+            y = TankWar.HEIGHT - height - minY - BORDER_DELTA_Y;
         }
     }
 
@@ -229,10 +234,9 @@ class Tank extends GameObject {
 
     private void fire(Direction dir) {
         if (!this.isLive()) return;
-        int x = this.x + WIDTH / 2 - Missile.WIDTH / 2;
-        int y = this.y + HEIGHT / 2 - Missile.HEIGHT / 2;
-        Missile m = new Missile(x, y, isEnemy, dir);
-        TankWar.getInstance().addMissile(m);
+        int x = this.x + width / 2 - Missile.WIDTH / 2;
+        int y = this.y + height / 2 - Missile.HEIGHT / 2;
+        TankWar.getInstance().addMissile(new Missile(x, y, isEnemy, dir));
     }
 
     private void determineDirection() {
@@ -242,14 +246,13 @@ class Tank extends GameObject {
     @Override
     Rectangle getRectangle() {
         int delta = this.isEnemy ? 0 : 40;
-        return new Rectangle(x - delta, y, WIDTH + delta, HEIGHT);
+        return new Rectangle(x - delta, y, REC_WIDTH + delta, REC_HEIGHT);
     }
 
     /**
      * For missile hit detection we need to exclude the little camel pet
      */
     Rectangle rectangleForMissileHit() {
-        Image image = previousDirection.get(OBJECT_TYPE);
-        return new Rectangle(x, y, image.getWidth(null), image.getHeight(null));
+        return new Rectangle(x, y, width, height);
     }
 }

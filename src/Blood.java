@@ -8,11 +8,14 @@ class Blood extends GameObject {
     };
 
     private final Image image;
+    private final int width, height;
 
     Blood() {
         this.x = points[0][0];
         this.y = points[0][1];
         this.image = Tools.getImage("blood.png");
+        this.width = this.image.getWidth(null);
+        this.height = this.image.getHeight(null);
     }
 
     @Override
@@ -26,6 +29,6 @@ class Blood extends GameObject {
 
     @Override
     Rectangle getRectangle() {
-        return new Rectangle(x, y, image.getWidth(null), image.getHeight(null));
+        return new Rectangle(x, y, width, height);
     }
 }
