@@ -14,9 +14,9 @@ dependencies(you can convert to Maven project in IDEA easily):
     ```
 
 * You might be surprised to see certain old style `for` loops, however that's
-purposely written to avoid introduce `CopyOnWriteArrayList` or relatively complex
+purposely written to avoid introducing `CopyOnWriteArrayList` or relatively complex
 thread safe handling, you can figure it out yourself via comparing two code snippets
-in the below:
+in the below in different contexts:
 
     ```java
     for (int i = 0; i < objects.size(); i++) {
@@ -31,6 +31,8 @@ in the below:
         this.drawGameObject(obj, g);
     }
     ```
+
+* You can press F11 to switch to IRON SKIN mode for testing purpose or what ever
 
 * This is a tiny project aiming to make students warm up with basic OOP design and
 implementation, there are obviously certain simplified implementation seem naive,
