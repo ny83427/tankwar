@@ -6,7 +6,7 @@ class Missile extends GameObject {
 
     static final int WIDTH = 10, HEIGHT = 10;
 
-    private static final String OBJECT_TYPE = Missile.class.getName().toLowerCase();
+    static final String OBJECT_TYPE = Missile.class.getName().toLowerCase();
 
     private final Direction dir;
 

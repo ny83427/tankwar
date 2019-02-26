@@ -13,6 +13,8 @@ dependencies(you can convert to Maven project in IDEA easily):
     </dependency>
     ```
 
+* Please add junit5 library to classpath manually for running simple test cases
+
 * You might be surprised to see certain old style `for` loops, however that's
 purposely written to avoid introducing `CopyOnWriteArrayList` or relatively complex
 thread safe handling, you can figure it out yourself via comparing two code snippets

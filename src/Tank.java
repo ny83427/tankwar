@@ -18,11 +18,15 @@ class Tank extends GameObject {
 
     private static final int LOW_HP_THRESHOLD = 50;
 
-    private static final String OBJECT_TYPE = Tank.class.getName().toLowerCase();
+    static final String OBJECT_TYPE = Tank.class.getName().toLowerCase();
 
     private int hp = MAX_HP;
 
     private Direction direction;
+
+    Direction direction() {
+        return this.direction;
+    }
 
     void stop() {
         this.direction = null;
