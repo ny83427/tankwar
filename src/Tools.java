@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class Tools {
-    private static Random RANDOM = new Random();
+    private static final Random RANDOM = new Random();
 
     static boolean nextBoolean() {
         return RANDOM.nextBoolean();

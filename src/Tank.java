@@ -153,47 +153,60 @@ class Tank extends GameObject {
     }
 
     void keyPressed(KeyEvent e) {
-        int key = e.getKeyCode();
-        if (key == KeyEvent.VK_SPACE) {
-            TankWar.getInstance().startGame();
-        } else if (key == KeyEvent.VK_F2) {
-            if (!this.isLive()) {
-                this.setLive(true);
-                this.hp = MAX_HP;
-                TankWar.getInstance().restart();
-            }
-        } else if (key == KeyEvent.VK_LEFT) {
-            dirCode |= Direction.Left.code;
-        } else if (key == KeyEvent.VK_UP) {
-            dirCode |= Direction.Up.code;
-        } else if (key == KeyEvent.VK_RIGHT) {
-            dirCode |= Direction.Right.code;
-        } else if (key == KeyEvent.VK_DOWN) {
-            dirCode |= Direction.Down.code;
-        } else if (key == KeyEvent.VK_F11) {
-            ironSkin = !this.isEnemy && !ironSkin;
-            if (ironSkin)
-                System.err.println("CHEATING: Player Tank in Iron Skin Mode!");
-            else
-                System.out.println("Player Tank switched to normal mode.");
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_SPACE:
+                TankWar.getInstance().startGame();
+                break;
+            case KeyEvent.VK_F2:
+                if (!this.isLive()) {
+                    this.setLive(true);
+                    this.hp = MAX_HP;
+                    TankWar.getInstance().restart();
+                }
+                break;
+            case KeyEvent.VK_LEFT:
+                dirCode |= Direction.Left.code;
+                break;
+            case KeyEvent.VK_UP:
+                dirCode |= Direction.Up.code;
+                break;
+            case KeyEvent.VK_RIGHT:
+                dirCode |= Direction.Right.code;
+                break;
+            case KeyEvent.VK_DOWN:
+                dirCode |= Direction.Down.code;
+                break;
+            case KeyEvent.VK_F11:
+                ironSkin = !this.isEnemy && !ironSkin;
+                if (ironSkin)
+                    System.err.println("CHEATING: Player Tank in Iron Skin Mode!");
+                else
+                    System.out.println("Player Tank switched to normal mode.");
+                break;
         }
         this.determineDirection();
     }
 
     void keyReleased(KeyEvent e) {
-        int key = e.getKeyCode();
-        if (key == KeyEvent.VK_CONTROL) {
-            fire();
-        } else if (key == KeyEvent.VK_A) {
-            superFire();
-        } else if (key == KeyEvent.VK_LEFT) {
-            dirCode ^= Direction.Left.code;
-        } else if (key == KeyEvent.VK_UP) {
-            dirCode ^= Direction.Up.code;
-        } else if (key == KeyEvent.VK_RIGHT) {
-            dirCode ^= Direction.Right.code;
-        } else if (key == KeyEvent.VK_DOWN) {
-            dirCode ^= Direction.Down.code;
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_CONTROL:
+                fire();
+                break;
+            case KeyEvent.VK_A:
+                superFire();
+                break;
+            case KeyEvent.VK_LEFT:
+                dirCode ^= Direction.Left.code;
+                break;
+            case KeyEvent.VK_RIGHT:
+                dirCode ^= Direction.Right.code;
+                break;
+            case KeyEvent.VK_UP:
+                dirCode ^= Direction.Up.code;
+                break;
+            case KeyEvent.VK_DOWN:
+                dirCode ^= Direction.Down.code;
+                break;
         }
         this.determineDirection();
     }
