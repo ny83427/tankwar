@@ -47,7 +47,7 @@ enum Direction {
      * </pre>
      * @param objectType    object type
      */
-    Image get(String objectType) {
+    Image getImage(String objectType) {
         return CACHE.computeIfAbsent(objectType + this.abbrev, key -> Tools.getImage(key + ".gif"));
     }
 }
