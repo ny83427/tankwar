@@ -14,12 +14,12 @@ to play audio file, if you are using JDK11 you need to add those jar files manua
 * There should be one and only one tank controlled by player using keyboard. You can use Up, Down,
 Left, Right to move the tank in eight directions, which means, you should include LeftUp, UpRight,
 RightDown, DownLeft also. Image files of the tank in eight directions will be provided under directory
-`assets\images\tank${direction}.gif`
+`assets/images/tank${direction}.gif`
 * When you press CTRL, your tank would fire a missile. Images of missile in eight directions are also
-provided as `assets\images\missile${direction}.gif`, direction of the missile should
-be same as that of Tank. Sound effect can be simulated using audio file `assets\audios\shoot.wav`
+provided as `assets/images/missile${direction}.gif`, direction of the missile should
+be same as that of Tank. Sound effect can be simulated using audio file `assets/audios/shoot.wav`
 * When you press A, you tank would trigger a SUPER-FIRE: fire to 8 directions at the same time!
-Sound effect can be simulated using either `assets\audios\supershoot.aiff` or `assets\audios\supershoot.wav` randomly
+Sound effect can be simulated using either `assets/audios/supershoot.aiff` or `assets/audios/supershoot.wav` randomly
 * Player tank has a initial maximum HP of 100. Please draw a blood bar with tank in the upper
 to display player tank's health status
 
@@ -37,8 +37,8 @@ disappear from the screen
 * If a missile from player tank hit any enemy tank, or a missile from any enemy tank hit
 player tank, please simulate a explosion
 * There are 10 images file for you to simulate a simple animation effect under directory
-`assets\images`, from `0.gif` to `10.gif`
-* Explosion sound effect audio file `assets\audios\explode.wav`
+`assets/images`, from `0.gif` to `10.gif`
+* Explosion sound effect audio file `assets/audios/explode.wav`
 
 ### Wall
 * Simulate 4 walls, one in upper-middle, two in left and right, one in bottom-middle
@@ -62,11 +62,11 @@ a little bit happier: `assets/images/pet-camel.gif`
 
 ### Game Rule
 * Press SPACE to start game, before that all game objects should stay still
-* Tank will move with speed of 5, which means its x and y will either plus of minus 5
+* Tank will move with speed of 5, which means its x and y will either plus or minus 5
 * Missile will fly with speed of 10, which means its x and y will either plus of minus 10
 * When player tank and enemy tank move and meet, they cannot penetrate each other as it should be
 * If HP of player tank was lower or equal to 0, GAME OVER! You should end the game, play the
-`assets\audios\death.mp3` audio file as an indicator and print message in the screen like this:
+`assets/audios/death.mp3` audio file as an indicator and print message in the screen like this:
 >     GAME OVER
 >     PRESS F2 TO RESTART
 
@@ -89,7 +89,7 @@ Enemies Killed: 452
 * To detect object collision, you can using `Rectange#intersects`, you can define a method `getRectangle`
 for game objects for simple collision detection
 * Write a enum `Direction` with 8 directions there(provided in skeleton code)
-* Write a game client `TankWar`, with 800 * 600 screen, title and icon(image file provided `assets\images\icon.png`)
+* Write a game client `TankWar`, with 800 * 600 screen, title and icon(image file provided `assets/images/icon.png`)
 * Using a infinite loop to repaint the screen with interval of 50MS
 * Change location of tank, missile, explode and implement draw method within these classes
 * Develop step by step, write a little and test it soon, use Version Control to manage your
