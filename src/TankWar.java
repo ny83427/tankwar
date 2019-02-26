@@ -4,75 +4,102 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 class TankWar extends JComponent {
-    private static final int WIDTH = 800, HEIGHT = 600;
+    private static final long serialVersionUID = -6766726706227546163L;
+
+    static final int WIDTH = 800, HEIGHT = 600;
+
+    private static final int INIT_ENEMY_TANK_ROWS = 3;
+
+    private static final int INIT_ENEMY_TANK_COUNT = 12;
 
     private static final int REPAINT_INTERVAL = 50;
 
-    private int x = WIDTH / 2, y = HEIGHT / 2;
-    private int my = HEIGHT / 2 + 50;
+    private Tank tank;
+    private Blood blood;
+    private List<Tank> enemyTanks;
+    private List<Missile> missiles;
+    private List<Explode> explodes;
+    private final List<Wall> walls;
+    private int enemiesKilled;
+    private boolean petCried;
 
     private TankWar() {
-        this.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                int key = e.getKeyCode();
-                if (key == KeyEvent.VK_CONTROL) {
-                    Tools.playAudio("shoot.wav");
-                    my += 10;
-                } else if (key == KeyEvent.VK_A) {
-                    Tools.playAudio(Tools.nextBoolean() ? "supershoot.wav" : "supershoot.aiff");
-                    my += 10;
-                } else if (key == KeyEvent.VK_LEFT) {
-                    x -= 5;
-                } else if (key == KeyEvent.VK_UP) {
-                    y -= 5;
-                } else if (key == KeyEvent.VK_RIGHT) {
-                    x += 5;
-                } else if (key == KeyEvent.VK_DOWN) {
-                    y += 5;
-                }
-
-                if (my >= HEIGHT) {
-                    my = Tools.nextInt(HEIGHT);
-                }
-            }
-        });
+        this.walls = Arrays.asList(
+            new Wall(250, 100, 300, 28),
+            new Wall(100, 200, 28, 280),
+            new Wall(670, 200, 28, 280),
+            new Wall(250, 520, 300, 28)
+        );
+        this.init();
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, WIDTH, HEIGHT);
+    private void init() {
+        this.tank = new Tank(WIDTH / 2, 50);
+        this.tank.initDirection(Direction.Down);
+        this.enemyTanks = new ArrayList<>();
+        this.initEnemyTanks();
+        this.missiles = new ArrayList<>();
+        this.explodes = new ArrayList<>();
+        this.blood = new Blood();
+        this.petCried = false;
+    }
 
-        g.setColor(Color.DARK_GRAY);
-        g.fillRect(250, 100, 300, 20);
-        g.fillRect(100, 200, 20, 150);
-        g.fillRect(680, 200, 20, 150);
-
-        g.setColor(Color.MAGENTA);
-        g.fillRect(360, 270, 15, 15);
-
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Default", Font.BOLD, 14));
-        g.drawString("Missiles: " + Tools.nextInt(10), 10, 50);
-        g.drawString("Explodes: " + Tools.nextInt(10), 10, 70);
-        g.drawString("Our Tank HP: " + Tools.nextInt(10), 10, 90);
-        g.drawString("Enemies Left: " + Tools.nextInt(10), 10, 110);
-        g.drawString("Enemies Killed: " + Tools.nextInt(10), 10, 130);
-
-        g.setColor(Color.RED);
-        g.fillRect(x, y - 10, 35, 10);
-        g.drawImage(Tools.getImage("tankD.gif"), x, y, null);
-
-        int dist = (WIDTH - 120) / 9;
-        for (int i = 0; i < 10; i++) {
-            g.drawImage(Tools.getImage("tankU.gif"), 50 + dist * i, HEIGHT / 2 + 100, null);
+    boolean isCollidedWith(Tank t) {
+        for (Wall wall : walls) {
+            if (t.isCollidedWith(wall)) {
+                return true;
+            }
         }
-        g.drawImage(Tools.getImage("missileD.gif"), WIDTH / 2, my, null);
 
-        g.drawImage(Tools.getImage("images/10.gif"), WIDTH / 2, 100, null);
+        for (int i = 0; i < enemyTanks.size(); i++) {
+            if (t.isCollidedWith(enemyTanks.get(i))) {
+                return true;
+            }
+        }
+
+        return t.isCollidedWith(tank);
+    }
+
+    void addMissile(Missile missile) {
+        this.missiles.add(missile);
+    }
+
+    void addExplode(Explode explode) {
+        this.explodes.add(explode);
+    }
+
+    private void initEnemyTanks() {
+        for (int i = 0; i < INIT_ENEMY_TANK_ROWS; i++) {
+            for (int j = 0; j < INIT_ENEMY_TANK_COUNT / INIT_ENEMY_TANK_ROWS; j++) {
+                int x = 100 + 110 * (j + 1);
+                int y = 300 + i * 50;
+                Tank tank = new Tank(x, y, true);
+                // Game might be restarted many times and regenerated enemy tank might collide with player tank
+                if (tank.isCollidedWith(this.tank)) {
+                    continue;
+                }
+                tank.initDirection(Direction.Up);
+                this.enemyTanks.add(tank);
+            }
+        }
+    }
+
+    void restart() {
+        this.enemiesKilled = 0;
+        this.init();
+    }
+
+    private boolean started;
+
+    void startGame() {
+        if (started) return;
+        start();
+        started = true;
     }
 
     private void start() {
@@ -82,6 +109,7 @@ class TankWar extends JComponent {
                 while (true) {
                     try {
                         repaint();
+                        triggerEvent();
                         Tools.sleepSilently(REPAINT_INTERVAL);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -91,21 +119,151 @@ class TankWar extends JComponent {
         }.execute();
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        if (!tank.isLive()) {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, WIDTH, HEIGHT);
+
+            g.setColor(Color.RED);
+            g.setFont(new Font("Default", Font.BOLD, 100));
+            g.drawString("GAME OVER", 80, HEIGHT / 2 - 40);
+
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Default", Font.BOLD, 50));
+            g.drawString("Press F2 to Start", 180, HEIGHT / 2 + 60);
+        } else {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, WIDTH, HEIGHT);
+
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Default", Font.BOLD, 14));
+            g.drawString("Missiles: " + missiles.size(), 10, 50);
+            g.drawString("Explodes: " + explodes.size(), 10, 70);
+            g.drawString("Our Tank HP: " + tank.getHp(), 10, 90);
+            g.drawString("Enemies Left: " + enemyTanks.size(), 10, 110);
+            g.drawString("Enemies Killed: " + enemiesKilled, 10, 130);
+
+            Image tree = Tools.getImage("tree.png");
+            g.drawImage(tree, 12, HEIGHT - tree.getHeight(null) - 40, null);
+            g.drawImage(tree, WIDTH - tree.getWidth(null) - 20, 12, null);
+
+            this.drawGameObjects(missiles, g);
+            this.drawGameObjects(explodes, g);
+            this.drawGameObjects(enemyTanks, g);
+            this.drawGameObjects(walls, g);
+
+            this.drawGameObject(tank, g);
+            this.drawGameObject(blood, g);
+        }
+    }
+
+    private <T extends GameObject> void drawGameObjects(List<T> objects, Graphics g) {
+        // Don't use foreach or iterator here to avoid java.util.ConcurrentModificationException
+        // Or use CopyOnWriteArrayList instead of ArrayList so that foreach can be safely used
+        for (int i = 0; i < objects.size(); i++) {
+            this.drawGameObject(objects.get(i), g);
+        }
+    }
+
+    private <T extends GameObject> void drawGameObject(T obj, Graphics g) {
+        if (obj != null && obj.isLive()) {
+            obj.draw(g);
+        }
+    }
+
+    private void triggerEvent() {
+        if (!tank.isLive()) return;
+
+        if (enemyTanks.isEmpty()) {
+            this.initEnemyTanks();
+        }
+
+        // Use classic loop to prevent CME
+        for (int i = 0; i < missiles.size(); i++) {
+            Missile m = missiles.get(i);
+            if (!m.isLive()) {
+                missiles.remove(i);
+                continue;
+            }
+            m.hitTanks(enemyTanks);
+            m.hitTank(tank);
+            m.hitWalls(walls);
+        }
+
+        for (int i = 0; i < enemyTanks.size(); i++) {
+            Tank et = enemyTanks.get(i);
+            if (!et.isLive()) {
+                enemyTanks.remove(i);
+                enemiesKilled++;
+                continue;
+            }
+            et.actRandomly();
+            if (this.isCollidedWith(et)) {
+                et.stop();
+            }
+        }
+
+        if (tank.isDying()) {
+            // Your loyal pet would probably cry for you, dude
+            if (Tools.nextInt(10) < 2 && !petCried) {
+                Tools.playAudio("camel.mp3");
+                petCried = true;
+            }
+            this.blood.setLive(Tools.nextInt(4) < 3);
+        }
+
+        if (this.isCollidedWith(tank))
+            tank.stop();
+
+        if (tank.isCollidedWith(blood)) {
+            tank.revive();
+            Tools.playAudio("revive.wav");
+            blood.setLive(false);
+        }
+
+        explodes.removeIf(e -> !e.isLive());
+    }
+
+    private static TankWar INSTANCE;
+
+    /**
+     * Singleton with lazy initialization
+     */
+    static TankWar getInstance() {
+        if (INSTANCE == null)
+            INSTANCE = new TankWar();
+        return INSTANCE;
+    }
+
     public static void main(String[] args) {
         PlatformImpl.startup(() -> {});
         Tools.setTheme();
-        JFrame frame = new JFrame("Tank War");
-        frame.setIconImage(Tools.getImage("/icon.png"));
+        JFrame frame = new JFrame("The Most Boring Tank War Game");
+        frame.setIconImage(Tools.getImage("icon.png"));
         frame.setSize(WIDTH, HEIGHT);
-        frame.setLocation(400, 100);
+        int locationY = (GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height - frame.getHeight()) / 2;
+        if (locationY < 0) {
+            locationY = 0;
+        }
+        frame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - frame.getWidth()) / 2, locationY);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
 
-        TankWar tankWar = new TankWar();
+        TankWar tankWar = TankWar.getInstance();
         frame.add(tankWar);
-        tankWar.setFocusable(true);
-        frame.setVisible(true);
-        tankWar.start();
-    }
-}
+        frame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                tankWar.tank.keyPressed(e);
+            }
 
+            @Override
+            public void keyReleased(KeyEvent e) {
+                tankWar.tank.keyReleased(e);
+            }
+        });
+        frame.setVisible(true);
+    }
+
+}
