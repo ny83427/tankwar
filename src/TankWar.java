@@ -72,10 +72,6 @@ class TankWar extends JComponent {
         this.missiles.add(missile);
     }
 
-    void addExplode(Explode explode) {
-        this.explodes.add(explode);
-    }
-
     private void initEnemyTanks() {
         for (int i = 0; i < INIT_ENEMY_TANK_ROWS; i++) {
             for (int j = 0; j < INIT_ENEMY_TANK_COUNT / INIT_ENEMY_TANK_ROWS; j++) {
@@ -188,9 +184,11 @@ class TankWar extends JComponent {
                 missiles.remove(i);
                 continue;
             }
-            m.hitTanks(enemyTanks);
-            m.hitTank(tank);
-            m.hitWalls(walls);
+            if (m.hitTanks(enemyTanks) || m.hitTank(tank)) {
+                this.explodes.add(new Explode(m.x, m.y));
+            } else {
+                m.hitWalls(walls);
+            }
         }
 
         for (int i = 0; i < enemyTanks.size(); i++) {

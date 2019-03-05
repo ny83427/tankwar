@@ -58,16 +58,16 @@ class Missile extends GameObject {
         }
 
         this.setLive(false);
-        TankWar.getInstance().addExplode(new Explode(x, y));
         return true;
     }
 
-    void hitTanks(List<Tank> tanks) {
+    boolean hitTanks(List<Tank> tanks) {
         for (Tank tank : tanks) {
             if (this.hitTank(tank)) {
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     void hitWalls(List<Wall> walls) {
