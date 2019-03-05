@@ -40,7 +40,6 @@ class TankWar extends JComponent {
 
     private void init() {
         this.tank = new Tank(WIDTH / 2, 50);
-        this.tank.initDirection(Direction.Down);
         this.enemyTanks = new ArrayList<>();
         this.initEnemyTanks();
         this.missiles = new ArrayList<>();
@@ -49,7 +48,11 @@ class TankWar extends JComponent {
         this.petCried = false;
     }
 
-    boolean isCollidedWith(Tank t) {
+    /**
+     * Detect whether a given, certain tank is collided with other game objects
+     * such as Walls, enemy tanks or the player tank
+     */
+    boolean isCollidedWithOtherObjects(Tank t) {
         for (Wall wall : walls) {
             if (t.isCollidedWith(wall)) {
                 return true;
@@ -78,12 +81,11 @@ class TankWar extends JComponent {
             for (int j = 0; j < INIT_ENEMY_TANK_COUNT / INIT_ENEMY_TANK_ROWS; j++) {
                 int x = 100 + 110 * (j + 1);
                 int y = 300 + i * 50;
-                Tank tank = new Tank(x, y, true);
+                Tank tank = new Tank(x, y, true, Direction.Up);
                 // Game might be restarted many times and regenerated enemy tank might collide with player tank
                 if (tank.isCollidedWith(this.tank)) {
                     continue;
                 }
-                tank.initDirection(Direction.Up);
                 this.enemyTanks.add(tank);
             }
         }
@@ -199,9 +201,6 @@ class TankWar extends JComponent {
                 continue;
             }
             et.actRandomly();
-            if (this.isCollidedWith(et)) {
-                et.stop();
-            }
         }
 
         if (tank.isDying()) {
@@ -212,9 +211,6 @@ class TankWar extends JComponent {
             }
             this.blood.setLive(Tools.nextInt(4) < 3);
         }
-
-        if (this.isCollidedWith(tank))
-            tank.stop();
 
         if (tank.isCollidedWith(blood)) {
             tank.revive();

@@ -21,9 +21,9 @@ class Tank extends GameObject {
 
     private int hp = MAX_HP;
 
-    private Direction direction;
+    private boolean stopped;
 
-    private Direction previousDirection = Direction.Down;
+    private Direction direction;
 
     /**
      * actual width of tank in current direction, different from that of {@link #REC_WIDTH}
@@ -36,19 +36,11 @@ class Tank extends GameObject {
 
     private int petWidth;
 
-    Direction direction() {
-        return this.direction;
-    }
-
-    void stop() {
-        this.direction = null;
-    }
-
     Tank(int x, int y) {
-        this(x, y, false);
+        this(x, y, false, Direction.Down);
     }
 
-    Tank(int x, int y, boolean isEnemy) {
+    Tank(int x, int y, boolean isEnemy, Direction direction) {
         this.x = x;
         this.y = y;
         this.isEnemy = isEnemy;
@@ -56,11 +48,7 @@ class Tank extends GameObject {
             pet = Tools.getImage("pet-camel.gif");
             petWidth = pet.getWidth(null);
         }
-    }
-
-    void initDirection(Direction direction) {
         this.direction = direction;
-        this.previousDirection = direction;
     }
 
     int getHp() {
@@ -92,7 +80,7 @@ class Tank extends GameObject {
 
     @Override
     void draw(Graphics g) {
-        Image img = previousDirection.getImage(OBJECT_TYPE);
+        Image img = direction.getImage(OBJECT_TYPE);
         this.width = img.getWidth(null);
         this.height = img.getHeight(null);
         // display blood bar for the tank player can control
@@ -105,16 +93,15 @@ class Tank extends GameObject {
         }
 
         g.drawImage(img, x, y, null);
-        if (this.direction != null) {
+        if (!stopped) {
             int oldX = x, oldY = y;
             x = x + this.direction.xFactor * SPEED;
             y = y + this.direction.yFactor * SPEED;
             // Cannot proceed further if meets walls or other tanks
-            if (TankWar.getInstance().isCollidedWith(this)) {
+            if (TankWar.getInstance().isCollidedWithOtherObjects(this)) {
                 this.x = oldX;
                 this.y = oldY;
             }
-            this.previousDirection = this.direction;
             this.checkBound();
         }
     }
@@ -141,7 +128,6 @@ class Tank extends GameObject {
             step = Tools.nextInt(12) + 3;
             int rn = Tools.nextInt(dirs.length);
             direction = dirs[rn];
-            previousDirection = dirs[rn];
             if (Tools.nextBoolean())
                 this.fire();
         }
@@ -222,7 +208,7 @@ class Tank extends GameObject {
 
     private void fire() {
         Tools.playAudio("shoot.wav");
-        this.fire(previousDirection);
+        this.fire(direction);
     }
 
     private void superFire() {
@@ -240,7 +226,10 @@ class Tank extends GameObject {
     }
 
     private void determineDirection() {
-        this.direction = Direction.get(this.dirCode);
+        Direction newDirection = Direction.get(this.dirCode);
+        stopped = newDirection == null;
+        if (!stopped)
+            this.direction = newDirection;
     }
 
     @Override
