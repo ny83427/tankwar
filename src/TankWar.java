@@ -29,6 +29,8 @@ class TankWar extends JComponent {
     private boolean petCried;
 
     private TankWar() {
+        this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        this.setDoubleBuffered(true);
         this.walls = Arrays.asList(
             new Wall(250, 100, 300, 28),
             new Wall(100, 200, 28, 280),
@@ -235,14 +237,7 @@ class TankWar extends JComponent {
         Tools.setTheme();
         JFrame frame = new JFrame("The Most Boring Tank War Game");
         frame.setIconImage(Tools.getImage("icon.png"));
-        frame.setSize(WIDTH, HEIGHT);
-        int locationY = (GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height - frame.getHeight()) / 2;
-        if (locationY < 0) {
-            locationY = 0;
-        }
-        frame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - frame.getWidth()) / 2, locationY);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
 
         TankWar tankWar = TankWar.getInstance();
         frame.add(tankWar);
@@ -257,6 +252,9 @@ class TankWar extends JComponent {
                 tankWar.tank.keyReleased(e);
             }
         });
+        frame.setResizable(false);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 

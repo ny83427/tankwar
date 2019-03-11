@@ -106,19 +106,17 @@ class Tank extends GameObject {
         }
     }
 
-    private static final int BORDER_DELTA_X = 15, BORDER_DELTA_Y = 25;
-
     private void checkBound() {
         int minX = isEnemy ? 0 : (petWidth + 5);
         if (x < minX) x = minX;
-        if (x > TankWar.WIDTH - width - BORDER_DELTA_X) {
-            x = TankWar.WIDTH - width - BORDER_DELTA_X;
+        if (x > TankWar.WIDTH - width) {
+            x = TankWar.WIDTH - width;
         }
 
         int minY = isEnemy ? 0 : BLOOD_BAR_HEIGHT;
         if (y < minY) y = minY;
-        if (y > TankWar.HEIGHT - height - minY - BORDER_DELTA_Y) {
-            y = TankWar.HEIGHT - height - minY - BORDER_DELTA_Y;
+        if (y > TankWar.HEIGHT - height - minY) {
+            y = TankWar.HEIGHT - height - minY;
         }
     }
 
