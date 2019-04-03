@@ -1,4 +1,4 @@
-import com.sun.javafx.application.PlatformImpl;
+import javafx.application.Platform;
 
 import javax.swing.*;
 import java.awt.*;
@@ -233,7 +233,7 @@ class TankWar extends JComponent {
     }
 
     public static void main(String[] args) {
-        PlatformImpl.startup(() -> {});
+        Platform.startup(() -> {});
         Tools.setTheme();
         JFrame frame = new JFrame("The Most Boring Tank War Game");
         frame.setIconImage(Tools.getImage("icon.png"));
