@@ -143,6 +143,7 @@ can access the original edition in his company's official [website](http://www.b
 3 months also, besides that he also taught me a lot about Oracle and other IT stuff
 * Yong Yang, my beloved elder brother, who supported me fully during that difficult time
 * Naiwen Zhang, my wife, who supported me fully during that difficult time
+* Qilian Zhou, a professional designer who helped me re-design all images generously
 
 ## License
 
