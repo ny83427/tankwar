@@ -143,3 +143,7 @@ can access the original edition in his company's official [website](http://www.b
 3 months also, besides that he also taught me a lot about Oracle and other IT stuff
 * Yong Yang, my beloved elder brother, who supported me fully during that difficult time
 * Naiwen Zhang, my wife, who supported me fully during that difficult time
+
+## License
+
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
