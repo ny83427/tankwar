@@ -126,3 +126,7 @@ level now, and there are many challenging problems waiting for you to resolve, a
 
 ### Happy Coding!
 ![](assets/images/happy-coding.jpg)
+
+## License
+
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
