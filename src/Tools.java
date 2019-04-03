@@ -26,7 +26,7 @@ class Tools {
     /**
      * Play an audio file located under directory "assets/audios"
      */
-    static void playAudio(final String audioFile) {
+    static synchronized void playAudio(final String audioFile) {
         File file = new File("assets/audios/" + audioFile);
         Media media = new Media(file.toURI().toString());
         new MediaPlayer(media).play();

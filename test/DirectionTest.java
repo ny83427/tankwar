@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DirectionTest {
 
-    private final String[] objectTypes = {Tank.OBJECT_TYPE, Missile.OBJECT_TYPE};
+    private final String[] objectTypes = {Tank.OBJECT_TYPE, Tank.ENEMY_OBJECT_TYPE, Missile.OBJECT_TYPE};
 
     @Test
     void getImage() {

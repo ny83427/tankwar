@@ -2,13 +2,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 class Tank extends GameObject {
-    /**
-     * Simplification for collision detection, as images of tank in different directions
-     * are different in size, it would add some complexity in certain conditions, which
-     * can be handled but require more effort
-     */
-    private static final int REC_WIDTH = 44, REC_HEIGHT = 44;
-
     private static final int SPEED = 5;
 
     private static final int BLOOD_BAR_HEIGHT = 10;
@@ -17,7 +10,11 @@ class Tank extends GameObject {
 
     private static final int LOW_HP_THRESHOLD = 50;
 
+    private static final int DISTANCE_TO_PET = 5;
+
     static final String OBJECT_TYPE = Tank.class.getName().toLowerCase();
+
+    static final String ENEMY_OBJECT_TYPE = "e" + OBJECT_TYPE;
 
     private int hp = MAX_HP;
 
@@ -25,12 +22,9 @@ class Tank extends GameObject {
 
     private Direction direction;
 
-    /**
-     * actual width of tank in current direction, different from that of {@link #REC_WIDTH}
-     */
-    private int width = 35, height = 34;
+    private final int width, height;
 
-    private final boolean isEnemy;
+    private final boolean enemy;
 
     private Image pet;
 
@@ -40,15 +34,18 @@ class Tank extends GameObject {
         this(x, y, false, Direction.Down);
     }
 
-    Tank(int x, int y, boolean isEnemy, Direction direction) {
+    Tank(int x, int y, boolean enemy, Direction direction) {
         this.x = x;
         this.y = y;
-        this.isEnemy = isEnemy;
-        if (!isEnemy) {
+        this.enemy = enemy;
+        if (!enemy) {
             pet = Tools.getImage("pet-camel.gif");
             petWidth = pet.getWidth(null);
         }
         this.direction = direction;
+        Image image = this.getImage();
+        this.width = image.getWidth(null);
+        this.height = image.getHeight(null);
     }
 
     int getHp() {
@@ -65,7 +62,7 @@ class Tank extends GameObject {
 
     void setLive(boolean live) {
         super.setLive(live);
-        if (!this.isLive() && !this.isEnemy) {
+        if (!this.isLive() && !this.enemy) {
             Tools.playAudio("death.mp3");
         }
     }
@@ -75,24 +72,25 @@ class Tank extends GameObject {
     }
 
     boolean isEnemy() {
-        return this.isEnemy;
+        return this.enemy;
+    }
+
+    private Image getImage() {
+        return direction.getImage(this.enemy ? ENEMY_OBJECT_TYPE : OBJECT_TYPE);
     }
 
     @Override
     void draw(Graphics g) {
-        Image img = direction.getImage(OBJECT_TYPE);
-        this.width = img.getWidth(null);
-        this.height = img.getHeight(null);
         // display blood bar for the tank player can control
-        if (!isEnemy) {
+        if (!enemy) {
             g.setColor(Color.RED);
             g.drawRect(x, y - BLOOD_BAR_HEIGHT, width, BLOOD_BAR_HEIGHT);
             int availableHPWidth = width * hp / MAX_HP;
             g.fillRect(x, y - BLOOD_BAR_HEIGHT, availableHPWidth, BLOOD_BAR_HEIGHT);
-            g.drawImage(pet, x - petWidth - 5, y, null);
+            g.drawImage(pet, x - petWidth - DISTANCE_TO_PET, y, null);
         }
 
-        g.drawImage(img, x, y, null);
+        g.drawImage(this.getImage(), x, y, null);
         if (!stopped) {
             int oldX = x, oldY = y;
             x = x + this.direction.xFactor * SPEED;
@@ -107,13 +105,13 @@ class Tank extends GameObject {
     }
 
     private void checkBound() {
-        int minX = isEnemy ? 0 : (petWidth + 5);
+        int minX = enemy ? 0 : (petWidth + DISTANCE_TO_PET);
         if (x < minX) x = minX;
         if (x > TankWar.WIDTH - width) {
             x = TankWar.WIDTH - width;
         }
 
-        int minY = isEnemy ? 0 : BLOOD_BAR_HEIGHT;
+        int minY = enemy ? 0 : BLOOD_BAR_HEIGHT;
         if (y < minY) y = minY;
         if (y > TankWar.HEIGHT - height - minY) {
             y = TankWar.HEIGHT - height - minY;
@@ -160,7 +158,7 @@ class Tank extends GameObject {
                 }
             }
             case KeyEvent.VK_F11 -> {
-                ironSkin = !this.isEnemy && !ironSkin;
+                ironSkin = !this.enemy && !ironSkin;
                 if (ironSkin)
                     System.err.println("CHEATING: Player Tank in Iron Skin Mode!");
                 else
@@ -198,7 +196,7 @@ class Tank extends GameObject {
         if (!this.isLive()) return;
         int x = this.x + width / 2 - Missile.WIDTH / 2;
         int y = this.y + height / 2 - Missile.HEIGHT / 2;
-        TankWar.getInstance().addMissile(new Missile(x, y, isEnemy, dir));
+        TankWar.getInstance().addMissile(new Missile(x, y, enemy, dir));
     }
 
     private void determineDirection() {
@@ -210,8 +208,8 @@ class Tank extends GameObject {
 
     @Override
     Rectangle getRectangle() {
-        int delta = this.isEnemy ? 0 : 40;
-        return new Rectangle(x - delta, y, REC_WIDTH + delta, REC_HEIGHT);
+        int delta = this.enemy ? 0 : petWidth + DISTANCE_TO_PET;
+        return new Rectangle(x - delta, y, width + delta, height);
     }
 
     /**
