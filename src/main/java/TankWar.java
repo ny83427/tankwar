@@ -1,12 +1,13 @@
-import javafx.application.Platform;
+import com.sun.javafx.application.PlatformImpl;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class TankWar extends JComponent {
     private static final long serialVersionUID = -6766726706227546163L;
@@ -25,7 +26,7 @@ class TankWar extends JComponent {
     private List<Missile> missiles;
     private List<Explode> explodes;
     private final List<Wall> walls;
-    private int enemiesKilled;
+    private final AtomicInteger enemiesKilled = new AtomicInteger();
     private boolean petCried;
 
     private TankWar() {
@@ -42,10 +43,10 @@ class TankWar extends JComponent {
 
     private void init() {
         this.tank = new Tank(WIDTH / 2, 50);
-        this.enemyTanks = new ArrayList<>();
+        this.enemyTanks = new CopyOnWriteArrayList<>();
         this.initEnemyTanks();
-        this.missiles = new ArrayList<>();
-        this.explodes = new ArrayList<>();
+        this.missiles = new CopyOnWriteArrayList<>();
+        this.explodes = new CopyOnWriteArrayList<>();
         this.blood = new Blood();
         this.petCried = false;
     }
@@ -61,8 +62,8 @@ class TankWar extends JComponent {
             }
         }
 
-        for (int i = 0; i < enemyTanks.size(); i++) {
-            if (t.isCollidedWith(enemyTanks.get(i))) {
+        for (Tank enemyTank : enemyTanks) {
+            if (t.isCollidedWith(enemyTank)) {
                 return true;
             }
         }
@@ -90,7 +91,7 @@ class TankWar extends JComponent {
     }
 
     void restart() {
-        this.enemiesKilled = 0;
+        this.enemiesKilled.set(0);
         this.init();
     }
 
@@ -106,6 +107,7 @@ class TankWar extends JComponent {
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
+                //noinspection InfiniteLoopStatement
                 while (true) {
                     try {
                         repaint();
@@ -159,11 +161,7 @@ class TankWar extends JComponent {
     }
 
     private <T extends GameObject> void drawGameObjects(List<T> objects, Graphics g) {
-        // Don't use foreach or iterator here to avoid java.util.ConcurrentModificationException
-        // Or use CopyOnWriteArrayList instead of ArrayList so that foreach can be safely used
-        for (int i = 0; i < objects.size(); i++) {
-            this.drawGameObject(objects.get(i), g);
-        }
+        objects.forEach(o -> drawGameObject(o, g));
     }
 
     private <T extends GameObject> void drawGameObject(T obj, Graphics g) {
@@ -179,13 +177,8 @@ class TankWar extends JComponent {
             this.initEnemyTanks();
         }
 
-        // Use classic loop to prevent CME
-        for (int i = 0; i < missiles.size(); i++) {
-            Missile m = missiles.get(i);
-            if (!m.isLive()) {
-                missiles.remove(i);
-                continue;
-            }
+        missiles.removeIf(m -> !m.isLive());
+        for (Missile m : missiles) {
             if (m.hitTanks(enemyTanks) || m.hitTank(tank)) {
                 this.explodes.add(new Explode(m.x, m.y));
             } else {
@@ -193,15 +186,10 @@ class TankWar extends JComponent {
             }
         }
 
-        for (int i = 0; i < enemyTanks.size(); i++) {
-            Tank et = enemyTanks.get(i);
-            if (!et.isLive()) {
-                enemyTanks.remove(i);
-                enemiesKilled++;
-                continue;
-            }
-            et.actRandomly();
-        }
+        int count = enemyTanks.size();
+        enemyTanks.removeIf(e -> !e.isLive());
+        enemiesKilled.addAndGet(count - enemyTanks.size());
+        enemyTanks.forEach(Tank::actRandomly);
 
         if (tank.isDying()) {
             // Your loyal pet would probably cry for you, dude
@@ -233,7 +221,7 @@ class TankWar extends JComponent {
     }
 
     public static void main(String[] args) {
-        Platform.startup(() -> {});
+        PlatformImpl.startup(() -> {});
         Tools.setTheme();
         JFrame frame = new JFrame("The Most Boring Tank War Game");
         frame.setIconImage(Tools.getImage("icon.png"));

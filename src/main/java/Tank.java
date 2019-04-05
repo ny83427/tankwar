@@ -145,37 +145,37 @@ class Tank extends GameObject {
 
     void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_LEFT -> dirCode |= Direction.Left.code;
-            case KeyEvent.VK_RIGHT -> dirCode |= Direction.Right.code;
-            case KeyEvent.VK_UP -> dirCode |= Direction.Up.code;
-            case KeyEvent.VK_DOWN -> dirCode |= Direction.Down.code;
-            case KeyEvent.VK_SPACE -> TankWar.getInstance().startGame();
-            case KeyEvent.VK_F2 -> {
+            case KeyEvent.VK_LEFT: dirCode |= Direction.Left.code; break;
+            case KeyEvent.VK_RIGHT: dirCode |= Direction.Right.code; break;
+            case KeyEvent.VK_UP: dirCode |= Direction.Up.code; break;
+            case KeyEvent.VK_DOWN: dirCode |= Direction.Down.code; break;
+            case KeyEvent.VK_SPACE: TankWar.getInstance().startGame(); break;
+            case KeyEvent.VK_F2:
                 if (!this.isLive()) {
                     this.setLive(true);
                     this.hp = MAX_HP;
                     TankWar.getInstance().restart();
                 }
-            }
-            case KeyEvent.VK_F11 -> {
+                break;
+            case KeyEvent.VK_F11:
                 ironSkin = !this.enemy && !ironSkin;
                 if (ironSkin)
                     System.err.println("CHEATING: Player Tank in Iron Skin Mode!");
                 else
                     System.out.println("Player Tank switched to normal mode.");
-            }
+                break;
         }
         this.determineDirection();
     }
 
     void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_CONTROL -> fire();
-            case KeyEvent.VK_A -> superFire();
-            case KeyEvent.VK_LEFT -> dirCode ^= Direction.Left.code;
-            case KeyEvent.VK_RIGHT -> dirCode ^= Direction.Right.code;
-            case KeyEvent.VK_UP -> dirCode ^= Direction.Up.code;
-            case KeyEvent.VK_DOWN -> dirCode ^= Direction.Down.code;
+            case KeyEvent.VK_CONTROL: fire(); break;
+            case KeyEvent.VK_A: superFire(); break;
+            case KeyEvent.VK_LEFT: dirCode ^= Direction.Left.code; break;
+            case KeyEvent.VK_RIGHT: dirCode ^= Direction.Right.code; break;
+            case KeyEvent.VK_UP: dirCode ^= Direction.Up.code; break;
+            case KeyEvent.VK_DOWN: dirCode ^= Direction.Down.code; break;
         }
         this.determineDirection();
     }
