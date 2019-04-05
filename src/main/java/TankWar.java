@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Command Line Usage:
+ * mvn package
+ * java -cp "target\*;target\tankwar-1.0-SNAPSHOT.jar" TankWar
+ */
 class TankWar extends JComponent {
     private static final long serialVersionUID = -6766726706227546163L;
 
