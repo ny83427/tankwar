@@ -1,21 +1,33 @@
 import java.awt.*;
 
 class Blood extends GameObject {
+    private static final int JUMP_DIST = 25;
     private int step;
 
-    private final int[][] points = {
-        {380, 260}, {360, 300}, {375, 275}, {400, 200}, {360, 270}, {365, 290}, {340, 280}
-    };
-
     private final Image image;
+    private final int[][] points;
     private final int width, height;
 
     Blood() {
-        this.x = points[0][0];
-        this.y = points[0][1];
         this.image = Tools.getImage("blood.png");
         this.width = this.image.getWidth(null);
         this.height = this.image.getHeight(null);
+        this.x = TankWar.WIDTH / 2 - this.width / 2;
+        this.y = TankWar.HEIGHT * 3 / 10;
+        int[][] dirs = new int[][]{{-1, 0, 1}, {-1, 0, 1}};
+        this.points = new int[9][2];
+        this.points[0] = new int[]{x, y};
+        int index = 1;
+        for (int horizontal : dirs[0]) {
+            for (int vertical : dirs[1]) {
+                if (horizontal == 0 && vertical == 0)
+                    continue;
+                this.points[index++] = new int[]{
+                    x + horizontal * JUMP_DIST + Tools.nextInt(-5, 6),
+                    y + vertical * JUMP_DIST + Tools.nextInt(-4, 5)
+                };
+            }
+        }
     }
 
     @Override

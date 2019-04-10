@@ -17,11 +17,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 class TankWar extends JComponent {
     private static final long serialVersionUID = -6766726706227546163L;
 
-    static final int WIDTH = 800, HEIGHT = 600;
+    static int WIDTH = 800, HEIGHT = 600;
 
-    private static final int INIT_ENEMY_TANK_ROWS = 3;
+    private static int INIT_ENEMY_TANK_ROWS = 3;
 
-    private static final int INIT_ENEMY_TANK_COUNT = 12;
+    private static int INIT_ENEMY_TANK_COUNT = 12;
 
     private static final int REPAINT_INTERVAL = 50;
 
@@ -30,30 +30,42 @@ class TankWar extends JComponent {
     private List<Tank> enemyTanks;
     private List<Missile> missiles;
     private List<Explode> explodes;
-    private final List<Wall> walls;
+    private List<Wall> walls;
     private final AtomicInteger enemiesKilled = new AtomicInteger();
     private boolean petCried;
 
     private TankWar() {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.setDoubleBuffered(true);
-        this.walls = Arrays.asList(
-            new Wall(250, 100, 300, 28),
-            new Wall(100, 200, 28, 280),
-            new Wall(670, 200, 28, 280),
-            new Wall(250, 520, 300, 28)
-        );
         this.init();
     }
 
     private void init() {
-        this.tank = new Tank(WIDTH / 2, 50);
+        this.initWalls();
+
+        Image imageOfTank = Tools.getImage("tankL.gif");
+        this.tank = new Tank(WIDTH / 2 - imageOfTank.getWidth(null) / 2,
+            HEIGHT / 8 - imageOfTank.getHeight(null) - 5);
         this.enemyTanks = new CopyOnWriteArrayList<>();
         this.initEnemyTanks();
         this.missiles = new CopyOnWriteArrayList<>();
         this.explodes = new CopyOnWriteArrayList<>();
         this.blood = new Blood();
         this.petCried = false;
+    }
+
+    private void initWalls() {
+        Image brick = Tools.getImage("brick.png");
+        int unitWidth = brick.getWidth(null);
+        int unitHeight = brick.getHeight(null);
+        int vHeight = HEIGHT / 2;
+        int hWidth = WIDTH * 2 / 5;
+        this.walls = Arrays.asList(
+            new Wall((WIDTH - hWidth) / 2, HEIGHT / 8, hWidth, unitHeight),
+            new Wall((WIDTH - hWidth) / 2, HEIGHT * 7 / 8 - unitHeight, hWidth, unitHeight),
+            new Wall(WIDTH / 8, (HEIGHT - vHeight) / 2, unitWidth, vHeight),
+            new Wall(WIDTH * 7 / 8 - unitWidth, (HEIGHT - vHeight) / 2, unitWidth, vHeight)
+        );
     }
 
     /**
@@ -81,10 +93,17 @@ class TankWar extends JComponent {
     }
 
     private void initEnemyTanks() {
+        Image imageOfEnemy = Tools.getImage("etankL.gif");
+        int w = imageOfEnemy.getWidth(null);
+        int rowCount = INIT_ENEMY_TANK_COUNT / INIT_ENEMY_TANK_ROWS;
+        int brickWidth = Tools.getImage("brick.png").getWidth(null);
+        int xBegin = WIDTH / 8 + brickWidth + 30;
+        int xEnd = WIDTH * 7 / 8 - brickWidth - 30;
+        int dist = (xEnd - xBegin - w * rowCount) / (rowCount - 1);
         for (int i = 0; i < INIT_ENEMY_TANK_ROWS; i++) {
-            for (int j = 0; j < INIT_ENEMY_TANK_COUNT / INIT_ENEMY_TANK_ROWS; j++) {
-                int x = 100 + 110 * (j + 1);
-                int y = 300 + i * 50;
+            for (int j = 0; j < rowCount; j++) {
+                int x = xBegin + dist * j + w * j;
+                int y = HEIGHT / 2 + i * 50;
                 Tank tank = new Tank(x, y, true, Direction.Up);
                 // Game might be restarted many times and regenerated enemy tank might collide with player tank
                 if (tank.isCollidedWith(this.tank)) {
@@ -134,11 +153,11 @@ class TankWar extends JComponent {
 
             g.setColor(Color.RED);
             g.setFont(new Font("Default", Font.BOLD, 100));
-            g.drawString("GAME OVER", 80, HEIGHT / 2 - 40);
+            g.drawString("GAME OVER", (WIDTH - 640) / 2, HEIGHT / 2 - 40);
 
             g.setColor(Color.WHITE);
             g.setFont(new Font("Default", Font.BOLD, 50));
-            g.drawString("Press F2 to Start", 180, HEIGHT / 2 + 60);
+            g.drawString("Press F2 to Start", (WIDTH - 440) / 2, HEIGHT / 2 + 60);
         } else {
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, WIDTH, HEIGHT);
@@ -152,8 +171,9 @@ class TankWar extends JComponent {
             g.drawString("Enemies Killed: " + enemiesKilled, 10, 130);
 
             Image tree = Tools.getImage("tree.png");
-            g.drawImage(tree, 12, HEIGHT - tree.getHeight(null) - 40, null);
-            g.drawImage(tree, WIDTH - tree.getWidth(null) - 20, 12, null);
+            int padding = WIDTH / 50;
+            g.drawImage(tree, padding, HEIGHT - tree.getHeight(null) - padding, null);
+            g.drawImage(tree, WIDTH - tree.getWidth(null) - padding, padding, null);
 
             this.drawGameObjects(missiles, g);
             this.drawGameObjects(explodes, g);
@@ -226,6 +246,16 @@ class TankWar extends JComponent {
     }
 
     public static void main(String[] args) {
+        try {
+            // Just provide user selections to choose
+            if (args.length > 0) WIDTH = Integer.parseInt(args[0]);
+            if (args.length > 1) HEIGHT = Integer.parseInt(args[1]);
+            if (args.length > 2) INIT_ENEMY_TANK_ROWS = Integer.parseInt(args[2]);
+            if (args.length > 3) INIT_ENEMY_TANK_COUNT = Integer.parseInt(args[3]);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid Width/Height configuration: " + Arrays.toString(args));
+        }
+
         PlatformImpl.startup(() -> {});
         Tools.setTheme();
         JFrame frame = new JFrame("The Most Boring Tank War Game");

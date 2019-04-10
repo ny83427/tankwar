@@ -24,6 +24,15 @@ class Tools {
     }
 
     /**
+     * generate a random number within the giving two numbers
+     * @param beginInclusive inclusive minimum number
+     * @param endExclusive  exclusive maximum number
+     */
+    static int nextInt(final int beginInclusive, final int endExclusive) {
+        return beginInclusive + RANDOM.nextInt(endExclusive - beginInclusive);
+    }
+
+    /**
      * Play an audio file located under directory "assets/audios"
      */
     static synchronized void playAudio(final String audioFile) {
