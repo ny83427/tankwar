@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DirectionTest {
 
@@ -10,7 +10,7 @@ class DirectionTest {
     void getImage() {
         for (Direction d : Direction.values()) {
             for (String objType : objectTypes) {
-                assertNotNull(d.getImage(objType));
+                assertTrue(d.getImage(objType).getWidth(null) > 0);
             }
         }
     }
