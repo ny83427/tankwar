@@ -5,6 +5,11 @@
 You are required to implement a simple Tank War game using OOP concepts in Java programming
 language. Sounds exciting, right?
 
+PS: I've also published a course at [Udemy](https://www.udemy.com/java-tank-war), you may use
+coupon code `EASTER2019` or `CSDNDEMO` to get the course for free if they are still available.
+It's taught in Chinese with step by step implementation instruction, which is very helpful for
+Java beginners.
+
 ### Development Environment
 It's recommended to use IDEA community edition as IDE. Using JDK8 to compile your code. You may
 fork this repository to your own and start your own solution. Since `Tools.java` uses javafx media
