@@ -1,6 +1,6 @@
 ## Mid-Term Project: Tank War
-[![Build Status](https://travis-ci.org/ny83427/tankwar.svg?branch=master)](https://travis-ci.org/ny83427/tankwar)
-[![codecov](https://codecov.io/gh/ny83427/tankwar/branch/master/graph/badge.svg)](https://codecov.io/gh/ny83427/tankwar)
+[![Build Status](https://travis-ci.org/ny83427/tankwar.svg?branch=cowlist)](https://travis-ci.org/ny83427/tankwar)
+[![codecov](https://codecov.io/gh/ny83427/tankwar/branch/cowlist/graph/badge.svg)](https://codecov.io/gh/ny83427/tankwar)
 
 ![](assets/images/demo.jpg)
 
