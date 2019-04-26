@@ -1,5 +1,8 @@
 language: java
 sudo: false
+branches:
+  only:
+    - cowlist
 jdk: oraclejdk8
 after_success:
   - bash <(curl -s https://codecov.io/bash)
