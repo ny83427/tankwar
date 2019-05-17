@@ -1,12 +1,13 @@
 ## About the Solution
 
 * Run in command line directly:
-```batch
-rem Windows only
-mvn clean package
-mvn dependency:copy-dependencies -DoutputDirectory=target/libs -DincludeScope=compile -DexcludeArtifactIds=lombok
-java -cp target\tankwar-1.0-SNAPSHOT.jar;target\libs\ TankWar
-```
+    ```batch
+    rem Windows only
+    mvn clean package
+    rem We don't have any dependency in this project, though
+    mvn dependency:copy-dependencies -DoutputDirectory=target/libs -DincludeScope=compile -DexcludeArtifactIds=lombok
+    java -cp target\tankwar-1.0-SNAPSHOT.jar;target\libs\ TankWar
+    ```
 
 * It's highly recommended to use JDK8 as it ships with JavaFX packages.
 If you use JDK11 or newer versions, you need to setup JavaFX libraries
