@@ -1,12 +1,10 @@
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import java.awt.Image;
 import java.io.File;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 class Tools {
     private static final Random RANDOM = new Random();
@@ -54,23 +52,6 @@ class Tools {
             Thread.sleep(time);
         } catch (InterruptedException e) {
             // -> Ignore
-        }
-    }
-
-    /**
-     * Set Swing Theme: Windows or Nimbus
-     */
-    static void setTheme() {
-        String theme = System.getProperty("os.name").startsWith("Windows") ? "Windows" : "Nimbus";
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if (theme.equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(Tools.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

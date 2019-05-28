@@ -263,7 +263,6 @@ class TankWar extends JComponent {
         }
 
         new JFXPanel();
-        Tools.setTheme();
         JFrame frame = new JFrame("The Most Boring Tank War Game");
         frame.setIconImage(Tools.getImage("icon.png"));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
