@@ -1,5 +1,4 @@
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.*;
 
 import javax.swing.ImageIcon;
 import java.awt.Image;
@@ -30,13 +29,22 @@ class Tools {
         return beginInclusive + RANDOM.nextInt(endExclusive - beginInclusive);
     }
 
+    private static boolean STOPPED = false;
+
     /**
      * Play an audio file located under directory "assets/audios"
      */
     static synchronized void playAudio(final String audioFile) {
-        File file = new File("assets/audios/" + audioFile);
-        Media media = new Media(file.toURI().toString());
-        new MediaPlayer(media).play();
+        if (STOPPED) return;
+
+        try {
+            File file = new File("assets/audios/" + audioFile);
+            Media media = new Media(file.toURI().toString());
+            new MediaPlayer(media).play();
+        } catch (MediaException e) {
+            e.printStackTrace();
+            STOPPED = true;
+        }
     }
 
     /**

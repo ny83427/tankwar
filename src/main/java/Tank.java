@@ -178,7 +178,7 @@ class Tank extends GameObject {
     }
 
     private void superFire() {
-        Tools.playAudio("supershoot.wav");
+        Tools.playAudio(Tools.nextBoolean() ? "supershoot.wav" : "supershoot.aiff");
         for (Direction dir : Direction.values()) {
             this.fire(dir);
         }
