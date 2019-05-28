@@ -225,7 +225,7 @@ class TankWar extends JComponent {
         if (tank.isDying()) {
             // Your loyal pet would probably cry for you, dude
             if (Tools.nextInt(10) < 2 && !petCried) {
-                Tools.playAudio("camel.mp3");
+                Tools.playAudio("camel.wav");
                 petCried = true;
             }
             this.blood.setLive(Tools.nextInt(4) < 3);

@@ -7,6 +7,12 @@
     rem We don't have any dependency in this project, though
     mvn dependency:copy-dependencies -DoutputDirectory=target/libs -DincludeScope=compile -DexcludeArtifactIds=lombok
     java -cp target\tankwar-1.0-SNAPSHOT.jar;target\libs\ TankWar
+    
+    ```
+    
+    There is audio compatibility issue in Ubuntu 18.04, as a workaround you can use wav file only
+    ```jshelllanguage
+    java -cp target/tankwar-1.0-SNAPSHOT.jar:target/libs/ TankWar
     ```
 
 * It's highly recommended to use JDK8 as it ships with JavaFX packages.

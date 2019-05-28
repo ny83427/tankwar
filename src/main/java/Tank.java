@@ -63,7 +63,7 @@ class Tank extends GameObject {
     void setLive(boolean live) {
         super.setLive(live);
         if (!this.isLive() && !this.enemy) {
-            Tools.playAudio("death.mp3");
+            Tools.playAudio("death.wav");
         }
     }
 
@@ -178,7 +178,7 @@ class Tank extends GameObject {
     }
 
     private void superFire() {
-        Tools.playAudio(Tools.nextBoolean() ? "supershoot.wav" : "supershoot.aiff");
+        Tools.playAudio("supershoot.wav");
         for (Direction dir : Direction.values()) {
             this.fire(dir);
         }
