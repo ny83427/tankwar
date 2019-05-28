@@ -1,4 +1,4 @@
-import com.sun.javafx.application.PlatformImpl;
+import javafx.embed.swing.JFXPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -114,25 +114,30 @@ class TankWar extends JComponent {
         }
     }
 
-    void restart() {
+    private void restart() {
         this.enemiesKilled.set(0);
         this.init();
     }
 
     private boolean started;
 
-    void startGame() {
+    private void startGame() {
         if (started) return;
-        start();
         started = true;
+        run();
     }
 
-    private void start() {
+    private void togglePauseStatus() {
+        started = !started;
+        if (started)
+            run();
+    }
+
+    private void run() {
         new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
-                //noinspection InfiniteLoopStatement
-                while (true) {
+                while (started) {
                     try {
                         repaint();
                         triggerEvent();
@@ -141,6 +146,7 @@ class TankWar extends JComponent {
                         e.printStackTrace();
                     }
                 }
+                return null;
             }
         }.execute();
     }
@@ -256,7 +262,7 @@ class TankWar extends JComponent {
             System.err.println("Invalid Width/Height configuration: " + Arrays.toString(args));
         }
 
-        PlatformImpl.startup(() -> {});
+        new JFXPanel();
         Tools.setTheme();
         JFrame frame = new JFrame("The Most Boring Tank War Game");
         frame.setIconImage(Tools.getImage("icon.png"));
@@ -267,7 +273,24 @@ class TankWar extends JComponent {
         frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                tankWar.tank.keyPressed(e);
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_SPACE:
+                        tankWar.startGame();
+                        break;
+                    case KeyEvent.VK_F2:
+                        if (!tankWar.tank.isLive()) {
+                            tankWar.tank.setLive(true);
+                            tankWar.tank.revive();
+                            tankWar.restart();
+                        }
+                        break;
+                    case KeyEvent.VK_F10:
+                        tankWar.togglePauseStatus();
+                        break;
+                    default:
+                        tankWar.tank.keyPressed(e);
+                        break;
+                }
             }
 
             @Override

@@ -149,14 +149,6 @@ class Tank extends GameObject {
             case KeyEvent.VK_RIGHT: dirCode |= Direction.Right.code; break;
             case KeyEvent.VK_UP: dirCode |= Direction.Up.code; break;
             case KeyEvent.VK_DOWN: dirCode |= Direction.Down.code; break;
-            case KeyEvent.VK_SPACE: TankWar.getInstance().startGame(); break;
-            case KeyEvent.VK_F2:
-                if (!this.isLive()) {
-                    this.setLive(true);
-                    this.hp = MAX_HP;
-                    TankWar.getInstance().restart();
-                }
-                break;
             case KeyEvent.VK_F11:
                 ironSkin = !this.enemy && !ironSkin;
                 if (ironSkin)
