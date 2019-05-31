@@ -35,7 +35,7 @@ class Tools {
      * Play an audio file located under directory "assets/audios"
      */
     static synchronized void playAudio(final String audioFile) {
-        if (STOPPED) return;
+        if (STOPPED || TankWar.getInstance().isSilent()) return;
 
         try {
             File file = new File("assets/audios/" + audioFile);

@@ -133,6 +133,20 @@ class TankWar extends JComponent {
             run();
     }
 
+    private boolean silent;
+
+    boolean isSilent() {
+        return this.silent;
+    }
+
+    private void toggleSilentStatus() {
+        silent = !silent;
+        if (silent)
+            System.out.println("We just enabled silent mode.");
+        else
+            System.out.println("We have disabled silent mode.");
+    }
+
     private void run() {
         new SwingWorker<Void, Void>() {
             @Override
@@ -175,6 +189,15 @@ class TankWar extends JComponent {
             g.drawString("Our Tank HP: " + tank.getHp(), 10, 90);
             g.drawString("Enemies Left: " + enemyTanks.size(), 10, 110);
             g.drawString("Enemies Killed: " + enemiesKilled, 10, 130);
+            int prev = HEIGHT - 50;
+            if (silent) {
+                g.drawString("A SILENT WORLD!", WIDTH - 160, prev);
+                prev += 20;
+            }
+            if (tank.isIronSkin()) {
+                g.setColor(Color.RED);
+                g.drawString("YOU'RE CHEATING!", WIDTH - 160, prev);
+            }
 
             Image tree = Tools.getImage("tree.png");
             int padding = WIDTH / 50;
@@ -283,9 +306,11 @@ class TankWar extends JComponent {
                             tankWar.restart();
                         }
                         break;
-                    case KeyEvent.VK_F10:
+                    case KeyEvent.VK_P:
                         tankWar.togglePauseStatus();
                         break;
+                    case KeyEvent.VK_S:
+                        tankWar.toggleSilentStatus();
                     default:
                         tankWar.tank.keyPressed(e);
                         break;
